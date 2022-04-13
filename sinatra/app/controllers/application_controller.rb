@@ -100,4 +100,42 @@ class ApplicationController < Sinatra::Base
     @file_details = Poeditor.get_language_translation(options)
     erb :view_file
   end
+
+  get '/list_terms' do
+    languages = session[:project][session[:current_project][:project_id]]
+    all_terms = languages.inject({}) do |all_terms, lang_details|
+      code = lang_details['code']
+      options = {
+        api_token: session[:current_project][:project_key],
+        id: session[:current_project][:project_id],
+        language: code
+      }
+      all_terms[code] = Poeditor.get_terms_with_language_code(options)
+      all_terms
+    end
+    english_terms = all_terms['en'].collect do |details|
+      {
+        term: details['term'],
+        context: details['context']
+      }
+    end
+    formatted_all_terms = []
+    english_terms.each do |terms|
+      formatted_term = {}
+      formatted_terms = {
+        term: terms[:term],
+        context: (JSON.parse(terms[:context]) rescue terms[:context])
+      }
+      translations = {}
+      all_terms.each do |code, terms_details|
+        translation_detail = terms_details.detect{|detail| detail['term'] == terms[:term] && detail['context'] == terms[:context] }
+        translation = { code => translation_detail["translation"]["content"]}
+        translations.merge!(translation)
+        formatted_term = formatted_terms.merge(translations: translations)
+      end
+      formatted_all_terms << formatted_term
+    end
+    @formatted_all_terms = formatted_all_terms
+    erb :list_terms
+  end
 end

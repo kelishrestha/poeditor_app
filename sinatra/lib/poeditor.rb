@@ -48,5 +48,14 @@ module Poeditor
         json_response['result']['projects']
       end
     end
+
+    def get_terms_with_language_code(params)
+      request = Faraday.new(url: BASE_URL)
+      response = request.post('terms/list', URI.encode_www_form(params))
+      if response.status == 200
+        json_response = JSON.parse(response.body)
+        json_response['result']['terms']
+      end
+    end
   end
 end

@@ -4,40 +4,37 @@
     <div class="col-3">
       <div class="list-group">
         <a href="/" class="list-group-item list-group-item-action">Back to Homepage</a>
-        <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+        <a href="#" class="list-group-item list-group-item-action" aria-current="true">
           View translations
         </a>
         <a href="/bulk_download" class="list-group-item list-group-item-action">Download all translations</a>
 
-        <a href="/list_terms" class="list-group-item list-group-item-action">List all terms</a>
+        <a href="/list_terms" class="list-group-item list-group-item-action active">List all terms</a>
       </div>
     </div>
     <div class="col-9">
       <div class="table-responsive">
         <table class="table table-hover table-light caption-top">
-          <caption>List of languages in POEditor</caption>
+          <caption>List of terms in POEditor</caption>
           <thead class="table-light">
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Language name</th>
-              <th scope="col">Code</th>
-              <th scope="col">Stats</th>
-              <th scope="col">Action</th>
+              <th scope="col">Term</th>
+              <th scope="col">Context</th>
+              <th scope="col">Translations</th>
             </tr>
           </thead>
           <tbody>
-            <% @language_list.each_with_index do |lang_details, index| %>
+            <% @formatted_all_terms.each_with_index do |term_details, index| %>
               <tr>
                 <td><%= index + 1 %></td>
-                <th scope="row"><%= lang_details['name'] %></th>
-                <td><%= lang_details['code'] %></td>
+                <th scope="row"><%= term_details[:term] %></th>
+                <td><%= term_details[:context] %></td>
                 <td>
-                  <span class="badge bg-primary"><%= lang_details['translations'] %> translations</span>
-                  <span class="badge bg-success"><%= lang_details['percentage'] %>% completed</span>
-                </td>
-                <td>
-                  <a href="/download?code=<%=lang_details['code']%>" class="btn btn-outline-primary">Download</a>
-                  <a href="/view_file?code=<%=lang_details['code']%>" class="btn btn-outline-primary" target="_blank">View</a>
+                  <% term_details[:translations].each do |code, value| %>
+                    <span class="badge bg-primary"><%= code %></span>: <%= value %>
+                    <br>
+                  <% end %>
                 </td>
               </tr>
             <% end %>
