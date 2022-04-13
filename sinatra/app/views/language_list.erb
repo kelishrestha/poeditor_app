@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="<%= url('/css/bootstrap.css') %>" type="text/css" />
+<div class="container py-4">
+  <a href="/bulk_download" class="btn btn-primary">Download all</a>
+  <hr>
+  <div class="table-responsive">
+    <table class="table table-hover table-light caption-top">
+      <caption>List of languages in POEditor</caption>
+      <thead class="table-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Language name</th>
+          <th scope="col">Code</th>
+          <th scope="col">Stats</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @language_list.each_with_index do |lang_details, index| %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <th scope="row"><%= lang_details['name'] %></th>
+            <td><%= lang_details['code'] %></td>
+            <td>
+              <span class="badge bg-primary"><%= lang_details['translations'] %> translations</span>
+              <span class="badge bg-success"><%= lang_details['percentage'] %>% completed</span>
+            </td>
+            <td>
+              <a href="/download?code=<%=lang_details['code']%>" class="btn btn-outline-primary">Download</a>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

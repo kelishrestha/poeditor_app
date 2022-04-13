@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="<%= url('/css/bootstrap.css') %>" type="text/css" />
+
+<div class="container">
+  <h1>POEditor application</h1>
+  <hr>
+  <form action="/languages" method="post">
+    <div class="row mb-3">
+      <label for="project-id" class="col-sm-2 col-form-label">Project ID</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="project-id" name="project[id]">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label for="project-key" class="col-sm-2 col-form-label">Project Key</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="project-key" name="project[key]">
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Fetch data</button>
+  </form>
+</div>
