@@ -1,4 +1,5 @@
 require 'bundler'
-Bundler.require
+require 'dotenv/load'
 
+Bundler.require
 require_all 'app'

@@ -14,16 +14,19 @@ class ApplicationController < Sinatra::Base
   end
 
   get '/' do
+    options = { api_token: ENV['POEDITOR_TOKEN'] }
+    session[:current_project] = { project_key: ENV['POEDITOR_TOKEN'] }
+    @projects = Poeditor.get_all_projects(options)
     erb :index
   end
 
   post '/languages' do
     project_id = params['project']['id']
-    project_key = params['project']['key']
+    project_key = params['project']['key'] || ENV['POEDITOR_TOKEN']
     options = { api_token: project_key, id: project_id}
     languages = Poeditor.get_languages_list(options)
     session[:project] = { "#{project_id}" => languages }
-    session[:current_project] = { project_id: project_id, project_key: project_key }
+    session[:current_project] = session[:current_project].merge({ project_id: project_id, project_key: project_key })
     redirect('/language_list')
   end
 

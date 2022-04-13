@@ -39,5 +39,14 @@ module Poeditor
         json_response['result']['project']
       end
     end
+
+    def get_all_projects(params)
+      request = Faraday.new(url: BASE_URL)
+      response = request.post('projects/list', URI.encode_www_form(params))
+      if response.status == 200
+        json_response = JSON.parse(response.body)
+        json_response['result']['projects']
+      end
+    end
   end
 end
