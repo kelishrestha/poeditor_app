@@ -85,4 +85,16 @@ class ApplicationController < Sinatra::Base
       send_file(output_filename, type: 'application/zip', disposition: 'attachment', filename: output_filename)
     end
   end
+
+  get '/view_file' do
+    code = params['code']
+    options = {
+      api_token: session[:current_project][:project_key],
+      id: session[:current_project][:project_id],
+      language: code,
+      type: 'key_value_json'
+    }
+    @file_details = Poeditor.get_language_translation(options)
+    erb :view_file
+  end
 end
