@@ -30,5 +30,14 @@ module Poeditor
         JSON.load(open(file_url))
       end
     end
+
+    def get_project_details(params)
+      request = Faraday.new(url: BASE_URL)
+      response = request.post('projects/view', URI.encode_www_form(params))
+      if response.status == 200
+        json_response = JSON.parse(response.body)
+        json_response['result']['project']
+      end
+    end
   end
 end

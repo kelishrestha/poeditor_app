@@ -1,6 +1,8 @@
 require_relative '../../lib/rails_sanitizer'
 require_relative '../../lib/poeditor'
+require_relative '../../lib/zip_file_generator'
 require 'fileutils'
+require 'zip'
 
 class ApplicationController < Sinatra::Base
   include Poeditor
@@ -49,32 +51,38 @@ class ApplicationController < Sinatra::Base
     end
   end
 
-  # TODO
   get '/bulk_download' do
-    filename = 'poeditor.zip'
-    temp_file = Tempfile.new(filename)
-
     begin
       # Updating all files before zip download
-      FileUtils.mkdir_p("projects_data/#{session[:current_project][:project_id]}")
-      filename = "projects_data/#{session[:current_project][:project_id]}/#{code}.json"
-      translation_file = File.new(filename, 'w+')
-      translation_file.puts(file_details.to_json)
-      send_file(translation_file, type: 'application/json', disposition: 'attachment', filename: filename)
-      translation_file.close
-
-      # TODO: Creating zip
-      Zip::OutputStream.open(temp_file) { |zos| }
-
-      Zip::File.open(temp_file.path, Zip::File::CREATE) do |zip|
-
+      project_directory = "projects_data/#{session[:current_project][:project_id]}"
+      FileUtils.mkdir_p(project_directory)
+      language_list = session[:project][session[:current_project][:project_id]]
+      language_list.each do |lang_details|
+        filename = "projects_data/#{session[:current_project][:project_id]}/#{lang_details['code']}.json"
+        translation_file = File.new(filename, 'w+')
+        options = {
+          api_token: session[:current_project][:project_key],
+          id: session[:current_project][:project_id],
+          language: lang_details['code'],
+          type: 'key_value_json'
+        }
+        file_details = Poeditor.get_language_translation(options)
+        translation_file.puts(file_details.to_json)
+        translation_file.close
       end
 
-      zip_data = File.read(temp_file.path)
-      send_data(zip_data, type: 'application/zip', disposition: 'attachment', filename: filename)
-    ensure # important steps below
-      temp_file.close
-      temp_file.unlink
+      # Creating zip file
+      options = {
+        api_token: session[:current_project][:project_key],
+        id: session[:current_project][:project_id]
+      }
+      project_details = Poeditor.get_project_details(options)
+      output_filename = "projects_data/#{project_details['name'].gsub(' ','_')}.zip"
+      File.delete(output_filename) if File.exist?(output_filename)
+      zip_file = ZipFileGenerator.new(project_directory, output_filename)
+      zip_file.write()
+
+      send_file(output_filename, type: 'application/zip', disposition: 'attachment', filename: output_filename)
     end
   end
 end
