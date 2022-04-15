@@ -1,52 +1,35 @@
-<link rel="stylesheet" href="<%= url('/css/bootstrap.css') %>" type="text/css" />
-<div class="container-fluid py-4">
-  <div class="row">
-    <div class="col-3">
-      <div class="list-group">
-        <a href="/" class="list-group-item list-group-item-action">Back to Homepage</a>
-        <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-          View translations
-        </a>
-        <a href="/bulk_download" class="list-group-item list-group-item-action">Download all translations</a>
-
-        <a href="/list_terms" class="list-group-item list-group-item-action active">List all terms</a>
-      </div>
-    </div>
-    <div class="col-9">
-      <div class="table-responsive">
-        <table class="table table-hover table-light caption-top">
-          <caption>List of terms in POEditor</caption>
-          <thead class="table-light">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Term</th>
-              <th scope="col">Context</th>
-              <th scope="col">Translations</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @formatted_all_terms.each_with_index do |term_details, index| %>
-              <tr>
-                <td><%= index + 1 %></td>
-                <th scope="row"><%= term_details[:term] %></th>
-                <td><%= term_details[:context] %></td>
-                <td>
-                  <% term_details[:translations].each do |code, value| %>
-                    <span class="badge bg-primary"><%= code %></span>: <%= value %>
-                    <br>
-                  <% end %>
-                </td>
-              </tr>
+<div class="table-responsive">
+  <table class="table table-hover table-light caption-top">
+    <caption>List of terms in POEditor</caption>
+    <thead class="table-light">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Term</th>
+        <th scope="col">Context</th>
+        <th scope="col">Translations</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @formatted_all_terms.each_with_index do |term_details, index| %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <th scope="row"><%= term_details[:term] %></th>
+          <td><%= term_details[:context] %></td>
+          <td>
+            <% term_details[:translations].each do |code, value| %>
+              <span class="badge bg-primary"><%= code %></span>: <%= value %>
+              <br>
             <% end %>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
-<footer class="footer mt-auto py-3 bg-light">
-  <div class="container">
-    <span class="text-muted">&copy; 2022 Kelina Shrestha</span>
-  </div>
-</footer>
+<script>
+  $(document).ready(function(){
+    $('#listTerms').parent().find('.active').removeClass('active');
+    $('#listTerms').addClass('active');
+  })
+</script>
