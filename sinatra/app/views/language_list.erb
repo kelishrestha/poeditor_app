@@ -14,7 +14,9 @@
       <% @language_list.each_with_index do |lang_details, index| %>
         <tr>
           <td><%= index + 1 %></td>
-          <th scope="row"><%= lang_details['name'] %></th>
+          <th scope="row">
+            <a href="/view_language_terms?code=<%=lang_details['code']%>"><%= lang_details['name'] %></a>
+          </th>
           <td><%= lang_details['code'] %></td>
           <td>
             <span class="badge bg-info"><%= lang_details['translations'] %> translations</span>

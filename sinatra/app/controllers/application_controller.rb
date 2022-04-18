@@ -178,4 +178,20 @@ class ApplicationController < Sinatra::Base
     flash[:success] = "#{delete_term_response['deleted']} term deleted successfully" if delete_term_response.present?
     redirect('/add_term')
   end
+
+  get '/view_language_terms' do
+    options = {
+      api_token: session[:current_project][:project_key],
+      id: session[:current_project][:project_id],
+      language: params['code']
+    }
+    @language_specific_terms = Poeditor.get_terms_with_language_code(options)
+    session[:current_project][:untranslated] = @language_specific_terms.select{|term| term['translation']['content'].blank?}
+    erb :list_language_terms, layout: :project_layout
+  end
+
+  get '/view_untranslated_terms' do
+    @language_specific_terms = session[:current_project][:untranslated]
+    erb :list_language_terms, layout: :project_layout
+  end
 end
