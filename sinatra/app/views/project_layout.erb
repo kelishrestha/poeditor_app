@@ -29,9 +29,11 @@
             <a href="/language_list" class="list-group-item list-group-item-action" aria-current="true" id="languageList"><i class="bi bi-badge-cc-fill"></i> View translations</a>
             <a href="/list_terms" class="list-group-item list-group-item-action" id="listTerms"><i class="bi bi-list-stars"></i> List all terms</a>
             <a href="/bulk_download" class="list-group-item list-group-item-action"><i class="bi bi-download"></i> Download all translations</a>
+            <a href="/add_term" class="list-group-item list-group-item-action" id="addTerm"><i class="bi bi-plus-lg"></i> Add term to project</a>
           </div>
         </div>
         <div class="col-9">
+          <%= styled_flash %>
           <%= yield %>
         </div>
       </div>

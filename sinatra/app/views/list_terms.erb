@@ -7,6 +7,7 @@
         <th scope="col">Term</th>
         <th scope="col">Context</th>
         <th scope="col">Translations</th>
+        <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -20,6 +21,9 @@
               <span class="badge bg-primary"><%= code %></span>: <%= value %>
               <br>
             <% end %>
+          </td>
+          <td>
+            <a href="/delete_term?term=<%=term_details[:term]%>&context=<%=term_details[:context]%>" class="btn btn-outline-danger" title="Delete"><i class="bi bi-trash3"></i></a>
           </td>
         </tr>
       <% end %>

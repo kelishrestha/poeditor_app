@@ -1,8 +1,10 @@
 require_relative '../../lib/rails_sanitizer'
 require_relative '../../lib/poeditor'
 require_relative '../../lib/zip_file_generator'
+require_relative '../../lib/flash'
 require 'fileutils'
 require 'zip'
+require 'sinatra/flash'
 
 class ApplicationController < Sinatra::Base
   include Poeditor
@@ -11,6 +13,7 @@ class ApplicationController < Sinatra::Base
     set :views, 'app/views'
     enable :sessions
     set :session_secret, 'password_security'
+    register Sinatra::Flash
   end
 
   get '/' do
@@ -140,6 +143,39 @@ class ApplicationController < Sinatra::Base
       formatted_all_terms << formatted_term
     end
     @formatted_all_terms = formatted_all_terms
+    session[:current_project][:term_contexts] = formatted_all_terms.map{|term| term[:context] }.compact.uniq
     erb :list_terms, layout: :project_layout
+  end
+
+  get '/add_term' do
+    erb :add_term, layout: :project_layout
+  end
+
+  post '/add_terms' do
+    options = {
+      api_token: session[:current_project][:project_key],
+      id: session[:current_project][:project_id],
+      data: [{
+        term: params['term'],
+        context: params['new_context'] || params['context']
+      }].to_json
+    }
+    add_term_response = Poeditor.add_new_term(options)
+    flash[:success] = "#{add_term_response['added']} term added successfully" if add_term_response.present?
+    redirect('/add_term')
+  end
+
+  get '/delete_term' do
+    options = {
+      api_token: session[:current_project][:project_key],
+      id: session[:current_project][:project_id],
+      data: [{
+        term: params['term'],
+        context: params['context']
+      }].to_json
+    }
+    delete_term_response = Poeditor.delete_term(options)
+    flash[:success] = "#{delete_term_response['deleted']} term deleted successfully" if delete_term_response.present?
+    redirect('/add_term')
   end
 end

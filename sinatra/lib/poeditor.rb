@@ -57,5 +57,25 @@ module Poeditor
         json_response['result']['terms']
       end
     end
+
+    # Add new term
+    def add_new_term(params)
+      request = Faraday.new(url: BASE_URL)
+      response = request.post('terms/add', URI.encode_www_form(params))
+      if response.status == 200
+        json_response = JSON.parse(response.body)
+        json_response['result']['terms']
+      end
+    end
+
+    # Delete term
+    def delete_term(params)
+      request = Faraday.new(url: BASE_URL)
+      response = request.post('terms/delete', URI.encode_www_form(params))
+      if response.status == 200
+        json_response = JSON.parse(response.body)
+        json_response['result']['terms']
+      end
+    end
   end
 end

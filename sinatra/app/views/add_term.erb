@@ -1,0 +1,36 @@
+<div class="pt-2 px-3">
+  <h3>Add new term</h3>
+  <hr>
+  <form action="/add_terms" method="post">
+    <div class="row mb-3">
+      <label for="term" class="col-sm-2 col-form-label">Term</label>
+      <div class="col-sm-7">
+        <input type="text" class="form-control" id="term" name="term" placeholder="e.g. join_button">
+      </div>
+    </div>
+      <div class="row mb-3">
+      <label for="context" class="col-sm-2 col-form-label">Context</label>
+      <div class="col-sm-7">
+        <select class="form-select" name="context">
+          <option selected>Choose context</option>
+          <% unless session[:current_project][:term_contexts].blank? %>
+            <% session[:current_project][:term_contexts].each do |context| %>
+              <option value="<%= context %>"><%= context.to_s.capitalize %></option>
+            <% end %>
+          <% end %>
+        </select>
+      </div>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="context" name="new_context" placeholder="Add new context">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary my-3">Add term</button>
+  </form>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('#addTerm').parent().find('.active').removeClass('active');
+    $('#addTerm').addClass('active');
+  })
+</script>
