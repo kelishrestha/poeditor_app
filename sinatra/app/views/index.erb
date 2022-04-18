@@ -6,7 +6,7 @@
     <select class="form-select" name="project[id]">
       <option selected>Choose project</option>
       <% @projects.each do |project| %>
-        <option value="<%= project['id'] %>"><%= project['name'] %></option>
+        <option value="<%= project['id'] %>|<%= project['name']%>"><%= project['name'] %></option>
       <% end %>
     </select>
     <button type="submit" class="btn btn-primary my-3">Fetch project data</button>
@@ -26,7 +26,6 @@
         <input type="text" class="form-control" id="project-key" name="project[key]">
       </div>
     </div>
-
     <button type="submit" class="btn btn-primary">Fetch project data</button>
   </form>
 </div>

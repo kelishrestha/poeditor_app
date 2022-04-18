@@ -21,14 +21,18 @@ class ApplicationController < Sinatra::Base
   end
 
   post '/languages' do
-    project_id = params['project']['id']
+    project_id, project_name = params['project']['id'].to_s.split('|')
     project_key = params['project']['key'] || ENV['POEDITOR_TOKEN']
     options = { api_token: project_key, id: project_id}
     languages = Poeditor.get_languages_list(options)
     session[:project] = { "#{project_id}" => languages }
-    session[:current_project] = session[:current_project].merge({ project_id: project_id, project_key: project_key })
-    redirect('/language_list')
-  end
+    session[:current_project] = session[:current_project].merge({
+        project_id: project_id,
+        project_key: project_key,
+        project_name: project_name
+      })
+      redirect('/language_list')
+    end
 
   get '/language_list' do
     @language_list = session[:project][session[:current_project][:project_id]]

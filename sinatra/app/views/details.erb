@@ -1,10 +1,13 @@
 <head>
   <link rel="stylesheet" href="<%= url('/css/bootstrap.css') %>" type="text/css" />
   <link rel="stylesheet" href="<%= url('/css/spinner.css') %>" type="text/css" />
+  <link rel="stylesheet" href="<%= url('/css/dataTables.override.css') %>" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 
-  <script src="<%= url('/js/bootstrap.bundle.js') %>"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="<%= url('/js/plugins/bootstrap/bootstrap.bundle.js') %>"></script>
+  <script src="<%= url('/js/plugins/jquery-3.6.0.min.js') %>"></script>
+  <script src="<%= url('/js/plugins/datatables/jquery.dataTables.min.js') %>"></script>
+  <script src="<%= url('/js/plugins/datatables/dataTables.bootstrap5.min.js') %>"></script>
   <script src="<%= url('/js/loader.js') %>"></script>
 </head>
 
@@ -13,10 +16,15 @@
     <div class="spinner"></div>
   </div>
   <div class="content">
-    <div class="container-fluid py-4">
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1"><%= session[:current_project][:project_name]%></span>
+      </div>
+    </nav>
+    <div class="container-fluid my-5 py-4">
       <div class="row">
         <div class="col-3">
-          <div class="list-group">
+          <div class="list-group position-fixed w-25 px-2">
             <a href="/" class="list-group-item list-group-item-action bg-success text-white" id="home"><i class="bi bi-arrow-left-circle-fill"></i> Back to Homepage</a>
             <a href="/language_list" class="list-group-item list-group-item-action" aria-current="true" id="languageList"><i class="bi bi-badge-cc-fill"></i> View translations</a>
             <a href="/list_terms" class="list-group-item list-group-item-action" id="listTerms"><i class="bi bi-list-stars"></i> List all terms</a>
@@ -28,11 +36,16 @@
         </div>
       </div>
     </div>
-    <footer class="footer mt-auto py-3 bg-light">
+    <footer class="footer mt-auto py-3 bg-light fixed-bottom">
       <div class="container">
         <span class="text-muted">&copy; 2022 Kelina Shrestha</span>
       </div>
     </footer>
   </div>
 
+  <script>
+    $(document).ready(function() {
+      $('.table').DataTable();
+    });
+  </script>
 </body>

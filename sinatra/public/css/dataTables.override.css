@@ -1,0 +1,4 @@
+.dataTables_length > label, .dataTables_filter > label {
+  display: inline-flex;
+  gap: 10px;
+}
