@@ -17,7 +17,7 @@ class ApplicationController < Sinatra::Base
     options = { api_token: ENV['POEDITOR_TOKEN'] }
     session[:current_project] = { project_key: ENV['POEDITOR_TOKEN'] }
     @projects = Poeditor.get_all_projects(options)
-    erb :index, layout: :application
+    erb :index, layout: :application_layout
   end
 
   post '/languages' do
@@ -36,7 +36,7 @@ class ApplicationController < Sinatra::Base
 
   get '/language_list' do
     @language_list = session[:project][session[:current_project][:project_id]]
-    erb :language_list, layout: :details
+    erb :language_list, layout: :project_layout
   end
 
   get '/download' do
@@ -140,6 +140,6 @@ class ApplicationController < Sinatra::Base
       formatted_all_terms << formatted_term
     end
     @formatted_all_terms = formatted_all_terms
-    erb :list_terms, layout: :details
+    erb :list_terms, layout: :project_layout
   end
 end
