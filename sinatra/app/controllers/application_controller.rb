@@ -102,7 +102,7 @@ class ApplicationController < Sinatra::Base
       type: 'key_value_json'
     }
     @file_details = Poeditor.get_language_translation(options)
-    erb :view_file
+    erb :view_file, layout: :view_file_layout
   end
 
   get '/list_terms' do
