@@ -47,7 +47,14 @@
 
   <script>
     $(document).ready(function() {
-      $('.table').DataTable();
+      var table = $('.table').DataTable();
+
+      $('.dataTables_filter input').unbind().bind('keyup', function() {
+        var searchTerm = this.value.toLowerCase(),
+            regex = '\\b' + searchTerm + '\\b';
+        table.rows.search(regex, true, false).draw();
+      })
+
     });
   </script>
 </body>
