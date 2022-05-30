@@ -77,5 +77,16 @@ module Poeditor
         json_response['result']['terms']
       end
     end
+
+    def translation_filenames(code)
+      case code.to_s.downcase
+      when 'zh-cn'
+        return 'zh'
+      when 'zh-hant'
+        return 'zh-TW'
+      else
+        code
+      end
+    end
   end
 end

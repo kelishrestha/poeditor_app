@@ -51,9 +51,11 @@ class ApplicationController < Sinatra::Base
       type: 'key_value_json'
     }
     file_details = Poeditor.get_language_translation(options)
+    codename = Poeditor.translation_filenames(code)
+
     begin
       FileUtils.mkdir_p("projects_data/#{session[:current_project][:project_id]}")
-      filename = "projects_data/#{session[:current_project][:project_id]}/#{code}.json"
+      filename = "projects_data/#{session[:current_project][:project_id]}/#{codename}.json"
       translation_file = File.new(filename, 'w+')
       translation_file.puts(file_details.to_json)
       send_file(translation_file, type: 'application/json', disposition: 'attachment', filename: filename)
@@ -68,7 +70,8 @@ class ApplicationController < Sinatra::Base
       FileUtils.mkdir_p(project_directory)
       language_list = session[:project][session[:current_project][:project_id]]
       language_list.each do |lang_details|
-        filename = "projects_data/#{session[:current_project][:project_id]}/#{lang_details['code']}.json"
+        codename = Poeditor.translation_filenames(lang_details['code'])
+        filename = "projects_data/#{session[:current_project][:project_id]}/#{codename}.json"
         translation_file = File.new(filename, 'w+')
         options = {
           api_token: session[:current_project][:project_key],
