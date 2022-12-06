@@ -1,0 +1,140 @@
+# Enable spot instances supporting
+spotInstances: true
+
+applicationName: poeditor
+applicationComponent: kcp
+applicationEnvironment: staging
+
+## These variables need for creating secrets for the AWS-SSM provisioner
+## Provisioner will get values from SSM Parameter store
+## Example how AWS arn looks
+## arn:aws:ssm:<REGION>:<ACCOUNT>:parameter/<parentFolder>/<envType>/<awsParamName>
+parentFolder: "kcp"
+envType: "staging/poeditor"
+secrets:
+  - secretName: "poeditor-token"
+    awsParamName: "poeditor-token"
+
+## Define the number of the pod's replica
+## This variable will be skipped if you have autoscaling
+replicaCount: 1
+
+## Define the image with tags
+image: "875098767412.dkr.ecr.us-east-1.amazonaws.com/poeditor-app:latest"
+
+## Define command to be executed at startup by container
+command: []
+
+## Define service variables
+## `targetPort` will also be added to the container
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  sslCertARN: "arn:aws:acm:us-east-1:875098767412:certificate/200dcaba-7c07-4355-ae89-30724a2f3bae"
+  type: ClusterIP
+  ports:
+    - name: http
+      servicePort: 80
+      containerPort: 3000
+
+## Environment variables
+## For this values will be added Release.Name prefix
+## It needed because services can use the same secrets name
+## If you want set environment variable without any prefix - use `envs` variable
+awsEnvs:
+  - name: "POEDITOR_TOKEN"
+    secretRef: "poeditor-token"
+
+## Common environment variables
+## For this values won't be added Release.Name prefix
+envs:
+  - name: "SINATRA_ENV"
+    value: "staging"
+
+## Resource requests and limits
+resources:
+  requests:
+    cpu: "100m"
+    memory: "100Mi"
+  limits:
+    cpu: "500m"
+    memory: "500Mi"
+
+## Defines volume mounts.
+volumeMounts: []
+
+## Liveness and Readiness probes
+livenessProbe: []
+
+readinessProbe:
+  tcpSocket:
+    port: 3000
+  initialDelaySeconds: 30
+  periodSeconds: 3
+  timeoutSeconds: 3
+
+## The security context for the main container
+securityContext:
+  allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+
+filebeat:
+  ## Enable extra pod
+  enabled: false
+
+autoscaling:
+  ## Enable hpa
+  enabled: false
+
+# ------------------------------------------------------
+## You can create Destination rule and Virtual service for this application
+# ------------------------------------------------------
+
+## IF you already have gateway - set the name
+GlobalGatewayName: "default/system-gateway"
+
+# This example for virtual service with the same destination rule and the same corsPolicy for diffirent prefixes
+# if you need only one prefix - just delete one under the "mapping" field
+istioServices:
+  destinationRules:
+    - name: kudo-kcp-poeditor
+  virtualServices:
+    - name: kudo-kcp-poeditor
+      host: "staging-poeditor.meetkudo.com"
+      mapping:
+        - name: "root-path"
+          destination: "kudo-kcp-poeditor"
+  corsPolicy: |
+      allowCredentials: true
+      allowHeaders:
+      - X-CURRENT-ROLE
+      - HTTP_WHO_M_I
+      - CONTENT-LANGUAGE
+      - HTTP_X_REAL_IP
+      - X-SAML-ACTION
+      - X-API-TOKEN
+      - X-EXTERNAL-USER-ID
+      - Mobile
+      - Content-type
+      - x-no-errors
+      - Retry-After
+      - X-ORIGIN-APPLICATION
+      allowMethods:
+      - POST
+      - GET
+      - OPTIONS
+      - PUT
+      - DELETE
+      allowOrigins:
+      - exact: '*'
+  headers:
+    request:
+      set:
+        x-forwarded-proto: https
+        x-forwarded-port: "443"
+    response:
+      set:
+        Strict-Transport-Security: max-age=15768000; includeSubDomains

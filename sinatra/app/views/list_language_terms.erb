@@ -1,0 +1,43 @@
+<div class="pt-2">
+  <div class="card">
+    <div class="card-body">
+      <p class="card-text">Untranslated terms: <%= @language_specific_terms.select{|term| term['translation']['content'].blank?}.count %>/<%= @language_specific_terms.count %></p>
+      <a href="/view_untranslated_terms" class="btn btn-primary">View untranslated terms</a>
+    </div>
+  </div>
+  <hr>
+  <div class="table-responsive pt-2">
+    <table class="table table-hover table-striped caption-top">
+      <caption>List of terms in POEditor</caption>
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Term</th>
+          <th scope="col">Context</th>
+          <th scope="col">Translations</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @language_specific_terms.each_with_index do |term_details, index| %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <th scope="row"><%= term_details['term'] %></th>
+            <td><%= term_details['context'] %></td>
+            <td><%= term_details['translation']['content'] %></td>
+            <td>
+              <a href="/delete_term?term=<%=term_details['term']%>&context=<%=term_details['context']%>" class="btn btn-outline-danger" title="Delete"><i class="bi bi-trash3"></i></a>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('#listTerms').parent().find('.active').removeClass('active');
+    $('#listTerms').addClass('active');
+  })
+</script>

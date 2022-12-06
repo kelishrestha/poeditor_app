@@ -1,0 +1,39 @@
+<div class="table-responsive pt-2">
+  <table class="table table-hover table-striped caption-top">
+    <caption>List of terms in POEditor</caption>
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Term</th>
+        <th scope="col">Context</th>
+        <th scope="col">Translations</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @formatted_all_terms.each_with_index do |term_details, index| %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <th scope="row"><%= term_details[:term] %></th>
+          <td><%= term_details[:context] %></td>
+          <td>
+            <% term_details[:translations].each do |code, value| %>
+              <span class="badge bg-primary"><%= code %></span>: <%= value %>
+              <br>
+            <% end %>
+          </td>
+          <td>
+            <a href="/delete_term?term=<%=term_details[:term]%>&context=<%=term_details[:context]%>" class="btn btn-outline-danger" title="Delete"><i class="bi bi-trash3"></i></a>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('#listTerms').parent().find('.active').removeClass('active');
+    $('#listTerms').addClass('active');
+  })
+</script>
