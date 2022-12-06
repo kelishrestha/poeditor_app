@@ -6,13 +6,15 @@ POEditor api data visualization in Sinatra
 1. Ruby-2.6.3
 2. Sinatra
 
-
 ## Project setup
 ```
 bundle install
 ```
 
 ### Run development server
+
+Using shotgun(Runs in 9393 port)
+
 ```
 shotgun
 ```
